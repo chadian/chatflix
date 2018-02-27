@@ -1,18 +1,48 @@
 import React, { Component } from 'react';
+import TinCan from './TinCan';
 import logo from './logo.svg';
 import './App.css';
 
 class App extends Component {
+  constructor() {
+    super();
+    this.state = { messages: [] };
+  }
+
+  componentDidMount() {
+    const messageReceiver = person => message =>
+      this.addMessage(person + message);
+
+    const me = new TinCan('Berlin', 'channel')
+      .setCandidateReceiver(candidate => otherPerson.tryCandidate(candidate))
+      .setMessageReceiver(messageReceiver('Sent from Dhaka: '));
+
+    const otherPerson = new TinCan('Dhaka', 'channel')
+      .setCandidateReceiver(candidate => me.tryCandidate(candidate))
+      .setMessageReceiver(messageReceiver('Sent from Berlin: '));
+
+    // const logAndReturn = thing => console.log(thing) || thing;
+    Promise.all([me.assemble(), otherPerson.assemble()])
+      .then(me.ping)
+      .then(otherPerson.pinged)
+      .then(otherPerson.pong)
+      .then(me.ponged)
+      .then(() => setTimeout(me.sendMessage.bind(me, 'Hallo'), 3000))
+      .then(() =>
+        setTimeout(otherPerson.sendMessage.bind(otherPerson, 'হ্যালো'), 5000)
+      );
+  }
+
+  addMessage(message) {
+    this.setState(({ messages }) => ({ messages: [ ...messages, message ] }));
+  }
+
   render() {
+    console.log(this.state);
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+        <h1 className="App-title">Chatflix</h1>
+        { this.state.messages.map(message => <div key={ message }> { message } </div> ) }
       </div>
     );
   }

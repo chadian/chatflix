@@ -1,49 +1,97 @@
 export default class TinCan {
+  alias = Math.random().toString();
+  channelName = '';
+  candidateReceiver = null;
+  messageReceiver = null;
+
   sentDescriptions = [];
   receivedDescriptions = [];
-  dataChannels = [];
 
-  constructor(channelName = Math.random().toString(), connection = new RTCPeerConnection()) {
-    if (!connection instanceof RTCPeerConnection) {
-      throw new TypeError('peerConnection must be an instance of RTCPeerConnection');
-    }
-
-    // channel must be created before any `createOffer` is
-    // attempted on the RTCPeerConnection otherwise it will fail
-    const channel = connection.createDataChannel(channelName, null);
-
-    this.channel = channel;
-    this.connection = connection;
+  constructor(alias, channelName = 'default') {
+    this.alias = alias;
+    this.channelName = channelName;
   }
 
-  async ping() {
+  assemble = () => {
+    const connection = new RTCPeerConnection();
+    this.setupConnection(connection);
+
+    const channel = connection.createDataChannel(this.channelName);
+
+    this.connection = connection;
+    this.channel = channel;
+
+    return Promise.resolve(this);
+  };
+
+  setupConnection(connection) {
+    const messageReceiver = this.messageReceiver;
+
+    connection.ondatachannel = e => {
+      e.channel.onmessage = messageEvent => messageReceiver(messageEvent.data);
+    };
+
+    connection.onicecandidate = e => this.candidateReceiver(e.candidate);
+  }
+
+  setCandidateReceiver = receiver => {
+    if (typeof receiver !== 'function')
+      throw TypeError('Receiver should be a function');
+    this.candidateReceiver = receiver;
+
+    return this;
+  };
+
+  tryCandidate = ice => {
+    if (!ice) return;
+    this.connection.addIceCandidate(ice);
+    return this;
+  };
+
+  setMessageReceiver = receiver => {
+    if (typeof receiver !== 'function')
+      throw TypeError('Receiver should be a function');
+    this.messageReceiver = receiver;
+
+    return this;
+  };
+
+  sendMessage = (msg = '') => {
+    this.channel.send(msg);
+    return this;
+  };
+
+  ping = async () => {
     const desc = await this.connection.createOffer();
     this.connection.setLocalDescription(desc);
     this.sentDescriptions.push(desc);
 
-    return packageDescription(desc);
-  }
+    return pack(desc);
+  };
 
-  async pinged(packagedDesc) {
-    const desc = unpackageDescription(packagedDesc);
+  pinged = async packagedDesc => {
+    const desc = unpack(packagedDesc);
     this.receivedDescriptions.push(desc);
     this.connection.setRemoteDescription(desc);
-  }
+  };
 
-  async pong() {
+  pong = async () => {
     const desc = await this.connection.createAnswer();
-    return packageDescription(desc);
-  }
+    this.connection.setLocalDescription(desc);
+    return pack(desc);
+  };
 
-  async ponged(packagedDesc) {
-    const desc = unpackageDescription(packagedDesc);
-  }
+  ponged = async packedDesc => {
+    const desc = unpack(packedDesc);
+    this.sentDescriptions.push(desc);
+    this.connection.setRemoteDescription(desc);
+  };
 }
 
-function packageDescription(dsec) {
-  return JSON.stringify(dsec, null, '');
+function pack(thing) {
+  return JSON.stringify(thing, null, '');
 }
 
-function unpackageDescription(packagedDesc) {
-  return JSON.parse(packagedDesc);
+function unpack(thing) {
+  return JSON.parse(thing);
 }
