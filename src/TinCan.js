@@ -1,4 +1,16 @@
-export default class TinCan {
+import React, { Component } from "react";
+
+export default class extends Component {
+  constructor() {
+    super();
+    this.state = new TinCan();
+  }
+  render() {
+    return this.props.render(this.state)
+  }
+}
+
+class TinCan {
   alias = Math.random().toString();
   channelName = '';
   candidateReceiver = null;
