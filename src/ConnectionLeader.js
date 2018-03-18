@@ -70,19 +70,22 @@ export default class ConnectionLeader extends Component {
     } = this.state;
 
     return <div className="ConnectionLeader">
+      <h2>Ping</h2>
+      <span>We've created an emoji ping below, copy it, and send it the other chatflixer.</span>
       <div className="EmojiBlock">
         { emoji.encode(pingOffer || '').toString() }
       </div>
 
       <textarea
-        placeholder="Paste response here"
+        placeholder="Paste pong here"
         className="OfferTextarea"
         value={ pongOffer }
         onChange={ e => this.updatePongOffer(e.target.value) }
       ></textarea>
 
-      <button className="Button" onClick={ e => this.acceptPongOffer() }>Accept Response</button>
+      <button className="Button" onClick={ e => this.acceptPongOffer() }>Accept pong</button>
 
+      <h2>Candidate</h2>
       <div class="EmojiBlock">
         { emoji.encode(JSON.stringify(candidate) || "").toString() }
       </div>

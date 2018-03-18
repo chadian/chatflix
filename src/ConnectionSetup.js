@@ -74,14 +74,14 @@ export default class ConnectionSetup extends Component {
       {
         (role === "LEADER" || !isRoleChosen) &&
         <button className={emojiButtonClasses} onClick={() => this.chooseRole("LEADER")}>
-          create offer 🤜
+          create ping 🤜
         </button>
       }
 
       {
         (role === "FOLLOWER" || !isRoleChosen) &&
         <button className={emojiButtonClasses} onClick={() => this.chooseRole("FOLLOWER")}>
-          accept offer🤜🤛
+          accept ping 🤜🤛
         </button>
       }
 
@@ -95,10 +95,10 @@ export default class ConnectionSetup extends Component {
 
       {
         role === "FOLLOWER" &&
-        this.assembleTinCan() ||
+        (this.assembleTinCan() ||
         <ConnectionFollower
           tinCan={ tinCan }
-        />
+        />)
       }
     </div>;
   }

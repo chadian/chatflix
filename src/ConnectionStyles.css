@@ -25,6 +25,7 @@
   font-size: 1rem;
   color: blue;
   display: inline-block;
+  margin: 0.5rem;
 }
 
 .Button:not(:first-child) {
