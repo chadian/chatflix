@@ -14,7 +14,10 @@ class App extends Component {
     return <div className="App">
       <h1 className="App-title">Chatflix</h1>
       <TinCan render={ tinCan =>
-        <ConnectionSetup tinCan={ tinCan }/>
+        <ConnectionSetup
+          tinCan={ tinCan }
+          messageHandler={ (msg) => console.log(Date(), msg) }
+        />
       }/>
     </div>;
   }

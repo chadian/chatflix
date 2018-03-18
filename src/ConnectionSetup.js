@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import classnames from 'classnames';
-import styles from './ConnectionSetup.css';
+import styles from './ConnectionStyles.css';
 import ConnectionLeader from './ConnectionLeader';
 import ConnectionFollower from './ConnectionFollower';
 
@@ -14,8 +14,7 @@ export default class ConnectionSetup extends Component {
 
   componentDidMount() {
     const { tinCan, messageHandler } = this.props;
-    tinCan
-      .setMessageReceiver(messageHandler || console.log);
+    tinCan.setMessageReceiver(messageHandler || console.log);
   }
 
   assembleTinCan() {
@@ -65,42 +64,42 @@ export default class ConnectionSetup extends Component {
     const { tinCan } = this.props;
 
     const isRoleChosen = Boolean(role);
-    const emojiButtonClasses = classnames('emojiButton', { roleChosen: isRoleChosen });
+    const emojiButtonClasses = classnames('EmojiButton', 'Button', { roleChosen: isRoleChosen });
 
     return <div className="ConnectionSetup">
-        <button className="emojiButton" onClick={() => this.reset()}>
-          reset ⏮
+      <button className="EmojiButton Button" onClick={() => this.reset()}>
+        reset ⏮
+      </button>
+
+      {
+        (role === "LEADER" || !isRoleChosen) &&
+        <button className={emojiButtonClasses} onClick={() => this.chooseRole("LEADER")}>
+          create offer 🤜
         </button>
+      }
 
-        {
-          (role === "LEADER" || !isRoleChosen) && <button className={emojiButtonClasses} onClick={() => this.chooseRole("LEADER")}>
-            create offer 🤜
-          </button>
-        }
+      {
+        (role === "FOLLOWER" || !isRoleChosen) &&
+        <button className={emojiButtonClasses} onClick={() => this.chooseRole("FOLLOWER")}>
+          accept offer🤜🤛
+        </button>
+      }
 
-        {
-          (role === "FOLLOWER" || !isRoleChosen) && <button className={emojiButtonClasses} onClick={() => this.chooseRole("FOLLOWER")}>
-            accept offer🤜🤛
-          </button>
-        }
-
-        {
-          role === "LEADER" ?
+      {
+        role === "LEADER" &&
           <ConnectionLeader
             tinCan={ tinCan }
             onSetupFinished={ () => this.assembleTinCan() }
           />
-          : undefined
-        }
+      }
 
-        {
-          role === "FOLLOWER" ?
-          this.assembleTinCan() ||
-          <ConnectionFollower
-            tinCan={ tinCan }
-          />
-          : undefined
-        }
-      </div>;
+      {
+        role === "FOLLOWER" &&
+        this.assembleTinCan() ||
+        <ConnectionFollower
+          tinCan={ tinCan }
+        />
+      }
+    </div>;
   }
 }

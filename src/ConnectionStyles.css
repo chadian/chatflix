@@ -1,0 +1,52 @@
+.EmojiButton {
+  font-size: 2rem;
+  display: block;
+  margin: auto;
+  border-width: 0.25rem;
+}
+
+.EmojiButton.roleChosen {
+  border-color: purple;
+  color: purple;
+}
+
+.EmojiBlock {
+  font-size: 0.65rem;
+  margin-top: 1rem;
+  border: 0.1rem solid blue;
+  margin: 1rem;
+  padding: 1rem;
+}
+
+.Button {
+  background-color: transparent;
+  border: 0.1rem solid blue;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  color: blue;
+  display: inline-block;
+}
+
+.Button:not(:first-child) {
+  margin-left: 1em;
+}
+
+.OfferTextarea {
+  display: block;
+  margin: auto;
+  width: 50%;
+  border: 0.25rem solid blue;
+  margin-top: 1rem;
+  height: 5rem;
+  font-size: 0.5rem;
+}
+
+.OfferTextarea:focus {
+  display: block;
+  margin: auto;
+  width: 50%;
+  border: 0.25rem solid purple;
+  margin-top: 1rem;
+  height: 5rem;
+  font-size: 0.5rem;
+}

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import emoji from "base64-emoji";
-import styles from './ConnectionFollower';
+import { Button } from './ConnectionFollower';
 
 export default class ConnectionFollower extends Component {
   constructor() {
@@ -64,20 +64,31 @@ export default class ConnectionFollower extends Component {
     return <div className="ConnectionFollower">
       <textarea
         placeholder="Paste response here"
-        className="pingOffer" value={ pingOffer }
+        className="OfferTextarea" value={ pingOffer }
         onChange={ e => this.updatePingOffer(e.target.value) }
       />
-      <button onClick={ e => this.acceptPingOffer() }>Accept Response</button>
+      <button
+        className="Button"
+        onClick={ e => this.acceptPingOffer() }
+      >
+        Accept Response
+      </button>
 
-      { emoji.encode(pongOffer || '').toString() }
+      {
+        pongOffer ?
+        <div className="EmojiBlock">
+          { emoji.encode(pongOffer || '').toString() }
+        </div>
+        : null
+      }
 
       <textarea
         placeholder="Paste candidate here"
-        className="candidate" value={ candidate }
+        className="OfferTextarea" value={ candidate }
         onChange={ e => this.updateCandidate(e.target.value) }
       />
-      <button onClick={ () => this.tryCandidate() }>Try candidate</button>
-      <button onClick={ () => this.sendMessage( )}>Send Message</button>
+      <button className="Button" onClick={ () => this.tryCandidate() }>Try candidate</button>
+      <button className="Button" onClick={ () => this.sendMessage( )}>Send Message</button>
     </div>;
   }
 }

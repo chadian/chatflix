@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import emoji from 'base64-emoji';
-import styles from './ConnectionLeader.css';
+import { Button } from './ConnectionStyles.css';
 
 export default class ConnectionLeader extends Component {
   constructor(props) {
@@ -70,16 +70,22 @@ export default class ConnectionLeader extends Component {
     } = this.state;
 
     return <div className="ConnectionLeader">
-      { emoji.encode(pingOffer || '').toString() }
+      <div className="EmojiBlock">
+        { emoji.encode(pingOffer || '').toString() }
+      </div>
+
       <textarea
         placeholder="Paste response here"
-        className="PongOffer"
+        className="OfferTextarea"
         value={ pongOffer }
         onChange={ e => this.updatePongOffer(e.target.value) }
       ></textarea>
-      <button onClick={ e => this.acceptPongOffer() }>Accept Response</button>
 
-      { emoji.encode(JSON.stringify(candidate) || "").toString() }
+      <button className="Button" onClick={ e => this.acceptPongOffer() }>Accept Response</button>
+
+      <div class="EmojiBlock">
+        { emoji.encode(JSON.stringify(candidate) || "").toString() }
+      </div>
     </div>
   }
 }
