@@ -12,5 +12,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
+  },
+  "devDependencies": {
+    "base64-emoji": "^2.1.0",
+    "classnames": "^2.2.5"
   }
 }

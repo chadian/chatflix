@@ -5,6 +5,7 @@ export default class extends Component {
     super();
     this.state = new TinCan();
   }
+
   render() {
     return this.props.render(this.state)
   }
@@ -13,8 +14,8 @@ export default class extends Component {
 class TinCan {
   alias = Math.random().toString();
   channelName = '';
-  candidateReceiver = null;
-  messageReceiver = null;
+  candidateReceiver = () => {};
+  messageReceiver = () => {};
 
   sentDescriptions = [];
   receivedDescriptions = [];
@@ -61,8 +62,10 @@ class TinCan {
   };
 
   setMessageReceiver = receiver => {
-    if (typeof receiver !== 'function')
+    if (typeof receiver !== 'function') {
       throw TypeError('Receiver should be a function');
+    }
+
     this.messageReceiver = receiver;
 
     return this;
@@ -85,11 +88,14 @@ class TinCan {
     const desc = unpack(packagedDesc);
     this.receivedDescriptions.push(desc);
     this.connection.setRemoteDescription(desc);
+
+    return this;
   };
 
   pong = async () => {
     const desc = await this.connection.createAnswer();
     this.connection.setLocalDescription(desc);
+
     return pack(desc);
   };
 
@@ -97,6 +103,8 @@ class TinCan {
     const desc = unpack(packedDesc);
     this.sentDescriptions.push(desc);
     this.connection.setRemoteDescription(desc);
+
+    return this;
   };
 }
 

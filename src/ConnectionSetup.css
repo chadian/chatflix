@@ -1,0 +1,17 @@
+.emojiButton {
+  font-size: 2rem;
+  display: block;
+  margin: auto;
+  background-color: transparent;
+  border: 0.25rem solid blue;
+  color: blue;
+}
+
+.emojiButton:not(:first-child) {
+  margin-top: 1rem;
+}
+
+.emojiButton.roleChosen {
+  border-color: purple;
+  color: purple;
+}
