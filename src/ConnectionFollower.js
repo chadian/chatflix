@@ -1,31 +1,35 @@
 import React, { Component } from 'react';
 import emoji from "base64-emoji";
+import {
+  pongPacker as packer,
+  pingUnpacker as unpacker
+} from './packaging';
 import { Button } from './ConnectionFollower';
 
 export default class ConnectionFollower extends Component {
   constructor() {
     super();
     this.state = {
-      pingOffer: null,
+      ping: null,
       pongOffer: null,
     };
   }
 
-  updatePingOffer(pingOffer) {
+  updatePing(ping) {
     // remove whitespace
-    pingOffer = pingOffer.replace(/^\s+|\s+$|\s+(?=\s)/g, '')
+    ping = ping.replace(/^\s+|\s+$|\s+(?=\s)/g, '')
 
     this.setState(prevState => {
-      return { ...prevState, pingOffer };
+      return { ...prevState, ping };
     });
   }
 
-  acceptPingOffer() {
+  acceptPing() {
     const { tinCan } = this.props;
-    const { pingOffer } = this.state;
+    const { ping } = this.state;
 
     tinCan
-      .pinged(emoji.decode(pingOffer).toString())
+      .pinged(unpacker(ping))
       .then(() => tinCan.pong())
       .then(pongOffer => {
         this.setState(prevState => {
@@ -54,7 +58,7 @@ export default class ConnectionFollower extends Component {
 
   render() {
     const {
-      pingOffer,
+      ping,
       pongOffer,
       candidate
     } = this.state;
@@ -64,12 +68,12 @@ export default class ConnectionFollower extends Component {
         !pongOffer && [
           <textarea
             placeholder="Paste ping here"
-            className="OfferTextarea" value={ pingOffer }
-            onChange={ e => this.updatePingOffer(e.target.value) }
+            className="OfferTextarea" value={ ping }
+            onChange={ e => this.updatePing(e.target.value) }
           />,
           <button
             className="Button"
-            onClick={ e => this.acceptPingOffer() }
+            onClick={ e => this.acceptPing() }
           >
             accept ping
           </button>
@@ -81,20 +85,8 @@ export default class ConnectionFollower extends Component {
           <span>Perfect, now send the emoji pong <em>below</em> back.</span>,
           <h2>Pong</h2>,
           <div className="EmojiBlock">
-            { emoji.encode(pongOffer || '').toString() }
+            { packer({ offer: pongOffer }) }
           </div>
-        ]
-      }
-
-      {
-        pongOffer && [
-          <textarea
-            placeholder="Paste candidate here"
-            className="OfferTextarea" value={ candidate }
-            onChange={ e => this.updateCandidate(e.target.value) }
-          />
-        ,
-          <button className="Button" onClick={ () => this.tryCandidate() }>Try candidate</button>
         ]
       }
     </div>;

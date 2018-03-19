@@ -67,6 +67,7 @@ export default class ConnectionSetup extends Component {
     const emojiButtonClasses = classnames('EmojiButton', 'Button', { roleChosen: isRoleChosen });
 
     return <div className="ConnectionSetup">
+      <p>Choose your role</p>
       <button className="EmojiButton Button" onClick={() => this.reset()}>
         reset ⏮
       </button>
@@ -74,14 +75,14 @@ export default class ConnectionSetup extends Component {
       {
         (role === "LEADER" || !isRoleChosen) &&
         <button className={emojiButtonClasses} onClick={() => this.chooseRole("LEADER")}>
-          create ping 🤜
+          be the pinger 😽
         </button>
       }
 
       {
         (role === "FOLLOWER" || !isRoleChosen) &&
         <button className={emojiButtonClasses} onClick={() => this.chooseRole("FOLLOWER")}>
-          accept ping 🤜🤛
+          be the ponger 🐒
         </button>
       }
 

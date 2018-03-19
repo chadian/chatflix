@@ -1,5 +1,9 @@
 import React, { Component } from "react";
-import emoji from 'base64-emoji';
+import {
+  pingPacker as packer,
+  pongUnpacker as unpacker
+} from "./packaging";
+import emoji from "base64-emoji";
 import { Button } from './ConnectionStyles.css';
 
 export default class ConnectionLeader extends Component {
@@ -16,6 +20,7 @@ export default class ConnectionLeader extends Component {
 
     tinCan.setCandidateReceiver(this.receiveCandidate.bind(this));
     onSetupFinished();
+    tinCan.connection.oniceconnectionstatechange = e => console.log(e.target.iceConnectionState);
   }
 
   componentDidMount() {
@@ -32,6 +37,7 @@ export default class ConnectionLeader extends Component {
 
   generatePingOffer() {
     const { tinCan } = this.props;
+
     tinCan.ping()
       .then(pingOffer => {
         this.setState((prevState) => {
@@ -41,54 +47,52 @@ export default class ConnectionLeader extends Component {
   }
 
   ponged() {
-    const { pongOffer } = this.state;
+    const { pong } = this.state;
     const { tinCan } = this.props;
-    tinCan.ponged(pongOffer);
+    tinCan.ponged(unpacker(pong));
   }
 
-  updatePongOffer(pongOffer) {
+  updatePong(pong) {
     // remove whitespace
-    pongOffer = pongOffer.replace(/^\s+|\s+$|\s+(?=\s)/g, "");
+    pong = pong.replace(/^\s+|\s+$|\s+(?=\s)/g, "");
 
     this.setState(prevState => {
-      return { ...prevState, pongOffer };
+      return { ...prevState, pong };
     });
   }
 
-  acceptPongOffer() {
-    const { pongOffer } = this.state;
+  acceptPong() {
+    const { pong } = this.state;
     const { tinCan } = this.props;
 
-    tinCan.ponged(emoji.decode(pongOffer).toString())
+    tinCan.ponged(unpacker(pong));
   }
 
   render() {
     const {
       pingOffer,
-      pongOffer,
-      candidate
+      pong,
+      candidate,
     } = this.state;
 
     return <div className="ConnectionLeader">
-      <h2>Ping</h2>
-      <span>We've created an emoji ping below, copy it, and send it the other chatflixer.</span>
-      <div className="EmojiBlock">
-        { emoji.encode(pingOffer || '').toString() }
-      </div>
+      { pingOffer && candidate ? [
+          <h2>Ping</h2>,
+          <span>We've created an emoji ping below, copy it, and send it the other chatflixer.</span>,
+          <div className="EmojiBlock">
+            { packer({ offer: pingOffer, candidate }) }
+          </div>
+        ] : 'Loading...'
+      }
 
       <textarea
         placeholder="Paste pong here"
         className="OfferTextarea"
-        value={ pongOffer }
-        onChange={ e => this.updatePongOffer(e.target.value) }
+        value={ pong }
+        onChange={ e => this.updatePong(e.target.value) }
       ></textarea>
 
-      <button className="Button" onClick={ e => this.acceptPongOffer() }>Accept pong</button>
-
-      <h2>Candidate</h2>
-      <div class="EmojiBlock">
-        { emoji.encode(JSON.stringify(candidate) || "").toString() }
-      </div>
+      <button className="Button" onClick={ e => this.acceptPong() }>Accept pong</button>
     </div>
   }
 }

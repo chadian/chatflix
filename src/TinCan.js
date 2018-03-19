@@ -81,13 +81,13 @@ class TinCan {
     this.connection.setLocalDescription(desc);
     this.sentDescriptions.push(desc);
 
-    return pack(desc);
+    return desc;
   };
 
-  pinged = async packagedDesc => {
-    const desc = unpack(packagedDesc);
-    this.receivedDescriptions.push(desc);
-    this.connection.setRemoteDescription(desc);
+  pinged = async ping => {
+    this.receivedDescriptions.push(ping.offer);
+    this.connection.setRemoteDescription(ping.offer);
+    this.tryCandidate(ping.candidate);
 
     return this;
   };
@@ -96,22 +96,13 @@ class TinCan {
     const desc = await this.connection.createAnswer();
     this.connection.setLocalDescription(desc);
 
-    return pack(desc);
+    return desc;
   };
 
-  ponged = async packedDesc => {
-    const desc = unpack(packedDesc);
-    this.sentDescriptions.push(desc);
-    this.connection.setRemoteDescription(desc);
+  ponged = async pong => {
+    this.sentDescriptions.push(pong.offer);
+    this.connection.setRemoteDescription(pong.offer);
 
     return this;
   };
-}
-
-function pack(thing) {
-  return JSON.stringify(thing, null, '');
-}
-
-function unpack(thing) {
-  return JSON.parse(thing);
 }
