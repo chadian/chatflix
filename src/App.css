@@ -1,28 +1,44 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  width: 450px;
+  padding: 1rem;
+  outline: 1px solid silver;
+  position: relative;
+}
+
 .App {
-  text-align: center;
+  padding-top: 3rem;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
+.ConnectionSetup .Reset {
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  margin: 0;
+  width: auto;
 }
 
-.App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
-  color: white;
+.AppTitle {
+  position: absolute;
+  left: 1rem;
+  top: 1rem;
+  margin: 0;
 }
 
-.App-title {
-  font-size: 1.5em;
+.StepOption {
+  display: block;
+  color: blue;
+  border-bottom: 1px dashed blue;
+  padding: 1rem 0;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
 }
 
-.App-intro {
-  font-size: large;
-}
-
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+.StepOption h1,
+.StepOption h2,
+.StepOption h3 {
+  margin: 0;
 }

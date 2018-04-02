@@ -7,6 +7,7 @@ import ConnectionFollower from './ConnectionFollower';
 export default class ConnectionSetup extends Component {
   constructor() {
     super();
+
     this.state = {
       role: null
     };
@@ -64,26 +65,23 @@ export default class ConnectionSetup extends Component {
     const { tinCan } = this.props;
 
     const isRoleChosen = Boolean(role);
-    const emojiButtonClasses = classnames('EmojiButton', 'Button', { roleChosen: isRoleChosen });
 
     return <div className="ConnectionSetup">
-      <p>Choose your role</p>
-      <button className="EmojiButton Button" onClick={() => this.reset()}>
+      <button className="EmojiButton Button Reset" onClick={() => this.reset()}>
         reset ⏮
       </button>
 
       {
-        (role === "LEADER" || !isRoleChosen) &&
-        <button className={emojiButtonClasses} onClick={() => this.chooseRole("LEADER")}>
-          be the pinger 😽
-        </button>
-      }
-
-      {
-        (role === "FOLLOWER" || !isRoleChosen) &&
-        <button className={emojiButtonClasses} onClick={() => this.chooseRole("FOLLOWER")}>
-          be the ponger 🐒
-        </button>
+        (!isRoleChosen) &&
+        [
+          <div className="StepOption"><h3>ping</h3></div>,
+          <button
+            className='EmojiButton Button'
+            onClick={ () => this.chooseRole("LEADER") }
+          >
+            🗣 create ping
+          </button>
+        ]
       }
 
       {
@@ -95,11 +93,14 @@ export default class ConnectionSetup extends Component {
       }
 
       {
-        role === "FOLLOWER" &&
-        (this.assembleTinCan() ||
-        <ConnectionFollower
-          tinCan={ tinCan }
-        />)
+        role !== "LEADER" &&
+        [
+          <div className="StepOption"><h3>or be pinged</h3></div>,
+          <ConnectionFollower
+            tinCan={ tinCan }
+            onSetupFinished={ () => this.assembleTinCan() }
+          />
+        ]
       }
     </div>;
   }

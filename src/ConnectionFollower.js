@@ -7,12 +7,18 @@ import {
 import { Button } from './ConnectionFollower';
 
 export default class ConnectionFollower extends Component {
-  constructor() {
+  constructor(props) {
     super();
+
+    const { tinCan } = props;
+
     this.state = {
       ping: null,
       pongOffer: null,
     };
+
+    window.tinCan = tinCan;
+    // tinCan.connection.oniceconnectionstatechange = e => console.log(e.target.iceConnectionState);
   }
 
   updatePing(ping) {
@@ -25,8 +31,10 @@ export default class ConnectionFollower extends Component {
   }
 
   acceptPing() {
-    const { tinCan } = this.props;
+    const { tinCan, onSetupFinished } = this.props;
     const { ping } = this.state;
+
+    onSetupFinished();
 
     tinCan
       .pinged(unpacker(ping))
@@ -75,7 +83,7 @@ export default class ConnectionFollower extends Component {
             className="Button"
             onClick={ e => this.acceptPing() }
           >
-            accept ping
+            👂 accept ping
           </button>
         ]
       }
