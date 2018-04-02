@@ -91,25 +91,25 @@ export default class ConnectionLeader extends Component {
       { pingOffer && candidate ?
         [
           <div className="StepOption"><h2>1. copy ping</h2></div>,
-          <Copy onCopy={ onCopy } copyText={ emojiPing } render={(copyAction => {
-            return <button className="Button" onClick={copyAction}>
+          <Copy onCopy={ onCopy } copyText={ emojiPing } render={copyAction => {
+            return <button className="Button" onClick={ copyAction }>
               copy emoji ping 🔠
             </button>;
-          })}/>,
-          isPingCopied ? <em>The emoji ping has been copied to your clipboard.</em> : null
+          }}/>,
+          isPingCopied ? <em>emoji ping copied</em> : null
         ] : 'Loading...'
       }
 
       { isPingCopied ?
         (<Fragment>
           <div className="StepOption"><h2>2. send ping</h2></div>
-          Send the emoji ping in a message (you've already copied it) to the other chatflixer, by e-mail, facebook, SMS,
+          Paste the emoji ping in a message (it's already been copied) to the other chatflixer, by e-mail, facebook, SMS,
           however you like.
 
           <div className="StepOption"><h2>3. accept pong</h2></div>
           <span>
             Once the other netflixer has accepted your emoji ping, they will send
-            back a pong which you'll paste in the below.
+            back a pong which you can paste below.
           </span>
           <textarea
             placeholder="Paste pong here"
@@ -118,7 +118,7 @@ export default class ConnectionLeader extends Component {
             onChange={ e => this.updatePong(e.target.value) }
           ></textarea>
 
-          <button className="Button" onClick={ e => this.acceptPong() }>Accept pong</button>
+          <button className="Button" onClick={ e => this.acceptPong() }>accept pong</button>
         </Fragment>)
         : null
       }

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Fragment, Component } from 'react';
 import emoji from "base64-emoji";
 import {
   pongPacker as packer,
@@ -15,6 +15,7 @@ export default class ConnectionFollower extends Component {
     this.state = {
       ping: null,
       pongOffer: null,
+      isPongCopied: false,
     };
 
     window.tinCan = tinCan;
@@ -45,11 +46,20 @@ export default class ConnectionFollower extends Component {
       });
   }
 
+  onPongCopy() {
+    this.setState((prevState) => {
+      return { ...prevState, isPongCopied: true };
+    });
+  }
+
   render() {
     const {
       ping,
-      pongOffer
+      pongOffer,
+      isPongCopied
     } = this.state;
+
+    const onCopy = this.onPongCopy.bind(this);
 
     return <div className="ConnectionFollower">
       {
@@ -69,13 +79,21 @@ export default class ConnectionFollower extends Component {
       }
 
       {
-        pongOffer && [
-          <span>Perfect, now send the emoji pong <em>below</em> back.</span>,
-          <h2>Pong</h2>,
-          <div className="EmojiBlock">
-            { packer({ offer: pongOffer }) }
-          </div>
-        ]
+        pongOffer &&
+        <Fragment>
+          <span>Perfect, now send the emoji pong <em>below</em> back.</span>
+          <h2>Pong</h2>
+          <Copy
+            copyText={ packer({ offer: pongOffer }) }
+            onCopy={ onCopy }
+            render={copyAction => {
+              return <button className="Button" onClick={ copyAction }>
+                copy emoji pong 🔠
+              </button>;
+            }}
+          />
+          { isPongCopied ? <em>emoji pong copied</em> : null }
+        </Fragment>
       }
     </div>;
   }
