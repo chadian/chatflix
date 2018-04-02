@@ -4,7 +4,7 @@ import {
   pongPacker as packer,
   pingUnpacker as unpacker
 } from './packaging';
-import { Button } from './ConnectionFollower';
+import Copy from "./Copy";
 
 export default class ConnectionFollower extends Component {
   constructor(props) {
@@ -18,7 +18,6 @@ export default class ConnectionFollower extends Component {
     };
 
     window.tinCan = tinCan;
-    // tinCan.connection.oniceconnectionstatechange = e => console.log(e.target.iceConnectionState);
   }
 
   updatePing(ping) {
@@ -46,29 +45,10 @@ export default class ConnectionFollower extends Component {
       });
   }
 
-  updateCandidate(candidate) {
-    // removes whitespace
-    candidate = candidate.replace(/^\s+|\s+$|\s+(?=\s)/g, "");
-
-    this.setState(prevState => {
-      return { ...prevState, candidate };
-    });
-  }
-
-  tryCandidate() {
-    const { tinCan } = this.props;
-    const { candidate } = this.state;
-
-    tinCan.tryCandidate(
-      JSON.parse(emoji.decode(candidate).toString())
-    );
-  }
-
   render() {
     const {
       ping,
-      pongOffer,
-      candidate
+      pongOffer
     } = this.state;
 
     return <div className="ConnectionFollower">

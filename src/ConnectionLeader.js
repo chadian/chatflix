@@ -25,7 +25,6 @@ export default class ConnectionLeader extends Component {
 
     tinCan.setCandidateReceiver(this.receiveCandidate.bind(this));
     onSetupFinished();
-    tinCan.connection.oniceconnectionstatechange = e => console.log(e.target.iceConnectionState);
   }
 
   componentDidMount() {
@@ -51,12 +50,6 @@ export default class ConnectionLeader extends Component {
       });
   }
 
-  ponged() {
-    const { pong } = this.state;
-    const { tinCan } = this.props;
-    tinCan.ponged(unpacker(pong));
-  }
-
   updatePong(pong) {
     // remove whitespace
     pong = pong.replace(/^\s+|\s+$|\s+(?=\s)/g, "");
@@ -77,7 +70,7 @@ export default class ConnectionLeader extends Component {
     return packer({ offer: pingOffer, candidate });
   }
 
-  onCopy() {
+  onPingCopy() {
     this.setState(prevState => {
       return { ...prevState, isPingCopied: true };
     });
@@ -91,7 +84,7 @@ export default class ConnectionLeader extends Component {
       isPingCopied,
     } = this.state;
 
-    const onCopy = this.onCopy.bind(this);
+    const onCopy = this.onPingCopy.bind(this);
     const emojiPing = this.packPing(pingOffer, candidate);
 
     return <div className="ConnectionLeader">
@@ -107,27 +100,27 @@ export default class ConnectionLeader extends Component {
         ] : 'Loading...'
       }
 
-      { isPingCopied ? (
-          <Fragment>
-            <div className="StepOption"><h2>2. send ping</h2></div>
-            Send the emoji ping in a message (you've already copied it) to the other chatflixer, by e-mail, facebook, SMS,
-            however you like.
+      { isPingCopied ?
+        (<Fragment>
+          <div className="StepOption"><h2>2. send ping</h2></div>
+          Send the emoji ping in a message (you've already copied it) to the other chatflixer, by e-mail, facebook, SMS,
+          however you like.
 
-            <div className="StepOption"><h2>3. accept pong</h2></div>
-            <span>
-              Once the other netflixer has accepted your emoji ping, they will send
-              back a pong which you'll paste in the below.
-            </span>
-            <textarea
-              placeholder="Paste pong here"
-              className="OfferTextarea"
-              value={ pong }
-              onChange={ e => this.updatePong(e.target.value) }
-            ></textarea>
+          <div className="StepOption"><h2>3. accept pong</h2></div>
+          <span>
+            Once the other netflixer has accepted your emoji ping, they will send
+            back a pong which you'll paste in the below.
+          </span>
+          <textarea
+            placeholder="Paste pong here"
+            className="OfferTextarea"
+            value={ pong }
+            onChange={ e => this.updatePong(e.target.value) }
+          ></textarea>
 
-            <button className="Button" onClick={ e => this.acceptPong() }>Accept pong</button>
-          </Fragment>
-        ) : null
+          <button className="Button" onClick={ e => this.acceptPong() }>Accept pong</button>
+        </Fragment>)
+        : null
       }
     </div>
   }
