@@ -82,7 +82,6 @@ export default class ConnectionFollower extends Component {
         pongOffer &&
         <Fragment>
           <span>Perfect, now send the emoji pong <em>below</em> back.</span>
-          <h2>Pong</h2>
           <Copy
             copyText={ packer({ offer: pongOffer }) }
             onCopy={ onCopy }

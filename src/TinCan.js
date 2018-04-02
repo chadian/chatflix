@@ -19,6 +19,7 @@ class TinCan {
 
   sentDescriptions = [];
   receivedDescriptions = [];
+  isDataChannelOpen = true;
 
   constructor(alias, channelName = 'default') {
     this.alias = alias;
@@ -38,13 +39,35 @@ class TinCan {
   };
 
   setupConnection(connection) {
-    const messageReceiver = this.messageReceiver;
+    // setup channel
+    connection.ondatachannel = e => this.setupChannel(e.channel);
 
-    connection.ondatachannel = e => {
-      e.channel.onmessage = messageEvent => messageReceiver(messageEvent.data);
-    };
-
+    // setup ice candidate handling
     connection.onicecandidate = e => this.candidateReceiver(e.candidate);
+
+    connection.onconnectionstatechange = this.checkConnectionEstablished.bind(this);
+  }
+
+  setupChannel(channel) {
+    const messageReceiver = this.messageReceiver;
+    channel.onmessage = messageEvent => messageReceiver(messageEvent.data);
+    channel.onopen = this.checkConnectionEstablished.bind(this);
+    channel.onclose = this.checkConnectionEstablished.bind(this);
+  }
+
+  checkConnectionEstablished() {
+    const isChannelReady = this.channel.readyState === 'open';
+    const isConnectionReady = this.connection.connectState = 'connected';
+
+    if (isConnectionReady && isChannelReady) {
+      this.onConnectionEstablished();
+    }
+  }
+
+  setOnConnectionEstablished(handler) {
+    this.onConnectionEstablished = handler;
+
+    return this;
   }
 
   setCandidateReceiver = receiver => {
@@ -58,6 +81,7 @@ class TinCan {
   tryCandidate = ice => {
     if (!ice) return;
     this.connection.addIceCandidate(ice);
+
     return this;
   };
 

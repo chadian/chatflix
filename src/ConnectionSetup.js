@@ -14,8 +14,14 @@ export default class ConnectionSetup extends Component {
   }
 
   componentDidMount() {
-    const { tinCan, messageHandler } = this.props;
+    const {
+      tinCan,
+      messageHandler,
+      onConnectionEstablished,
+    } = this.props;
+
     tinCan.setMessageReceiver(messageHandler || console.log);
+    tinCan.setOnConnectionEstablished(onConnectionEstablished);
   }
 
   assembleTinCan() {
