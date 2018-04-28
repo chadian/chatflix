@@ -1,10 +1,10 @@
 import React, { Fragment, Component } from "react";
 import emoji from "base64-emoji";
 import classnames from "classnames";
-    import {
-      pingPacker as packer,
-      pongUnpacker as unpacker
-    } from "./packaging";
+import {
+  pingPacker as packer,
+  pongUnpacker as unpacker
+} from "./packaging";
 import Copy from './Copy';
 import { Button } from './ConnectionStyles.css';
 
