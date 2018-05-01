@@ -32,7 +32,11 @@ export default class Copy extends Component {
       onCopy
     } = this.props;
 
+    // dummy element is used to hold the text to be copied
     const dummyElement = this.createDummyElement();
+
+    // from testing, the element has to be in the document
+    // to be selectable and copyable
     document.body.appendChild(dummyElement);
 
     const range = document.createRange();
@@ -51,6 +55,7 @@ export default class Copy extends Component {
   }
 
   render() {
-    return this.props.render(this.copy.bind(this));
+    const copy = this.copy.bind(this);
+    return this.props.render(copy);
   }
 };
