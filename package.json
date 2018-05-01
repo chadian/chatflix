@@ -15,7 +15,13 @@
     "eject": "react-scripts eject"
   },
   "devDependencies": {
+    "babel-jest": "^22.4.3",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
     "base64-emoji": "^2.1.0",
-    "classnames": "^2.2.5"
+    "classnames": "^2.2.5",
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
+    "react-test-renderer": "^16.3.2"
   }
 }
