@@ -17,8 +17,6 @@ export default class ConnectionFollower extends Component {
       pongOffer: null,
       isPongCopied: false,
     };
-
-    window.tinCan = tinCan;
   }
 
   updatePing(ping) {
