@@ -29,26 +29,6 @@ export default class ConnectionSetup extends Component {
     tinCan.assemble();
   }
 
-  pinged() {
-    const { pingedOffer } = this.state;
-    const { tinCan } = this.props;
-    tinCan.pinged(pingedOffer)
-      .then(tinCan.pong)
-      .then(pongedOffer => {
-        this.setState((prevState) => {
-          return { ...prevState, pongedOffer }
-        });
-      });
-  }
-
-  updatePingedOffer(e) {
-    const offer = e.target.value;
-
-    this.setState(prevState => {
-      return { ...prevState, pingedOffer: offer };
-    });
-  }
-
   chooseRole(role) {
     this.setState((prevState) => {
       return {

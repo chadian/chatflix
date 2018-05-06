@@ -89,15 +89,15 @@ export default class ConnectionLeader extends Component {
 
     return <div className="ConnectionLeader">
       { pingOffer && candidate ?
-        [
-          <div className="StepOption"><h2>1. copy ping</h2></div>,
+        <Fragment>
+          <div className="StepOption"><h2>1. copy ping</h2></div>
           <Copy onCopy={ onCopy } copyText={ emojiPing } render={copyAction => {
             return <button className="Button" onClick={ copyAction }>
               copy emoji ping 🔠
             </button>;
-          }}/>,
-          isPingCopied ? <em>emoji ping copied</em> : null
-        ] : 'Loading...'
+          }}/>
+          { isPingCopied ? <em>emoji ping copied</em> : null }
+        </Fragment> : 'Loading...'
       }
 
       { isPingCopied ?
