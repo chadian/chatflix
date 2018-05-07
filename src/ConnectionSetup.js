@@ -7,13 +7,12 @@ import ConnectionFollower from './ConnectionFollower';
 import {
   connectionSetupReducer,
   SET_ROLE_ACTION,
-  RESET
+  RESET_ACTION
 } from './state/connectionSetup';
 
 class ConnectionSetup extends Component {
   constructor(props) {
     super();
-
     this.state = {};
   }
 
@@ -30,7 +29,7 @@ class ConnectionSetup extends Component {
 
   assembleTinCan() {
     const { tinCan } = this.props;
-    tinCan.assemble();
+    return tinCan.assemble();
   }
 
   chooseRole(role) {
@@ -42,12 +41,20 @@ class ConnectionSetup extends Component {
   }
 
   render() {
-    const { tinCan, dispatch, role } = this.props;
+    const {
+      tinCan,
+      dispatch,
+      role,
+      candidate,
+      pingOffer,
+      pong,
+      wasPingCopied,
+    } = this.props;
 
     const isRoleChosen = Boolean(role);
 
     return <div className="ConnectionSetup">
-      <button className="EmojiButton Button Reset" onClick={() => dispatch({ type: RESET })}>
+      <button className="EmojiButton Button Reset" onClick={() => dispatch({ type: RESET_ACTION })}>
         reset ⏮
       </button>
 
@@ -68,19 +75,26 @@ class ConnectionSetup extends Component {
         role === "LEADER" &&
           <ConnectionLeader
             tinCan={ tinCan }
-            onSetupFinished={ () => this.assembleTinCan() }
+            candidate={ candidate }
+            pingOffer={ pingOffer }
+            pong={ pong }
+            wasPingCopied={ wasPingCopied }
+            readyToAssemble={ () => this.assembleTinCan() }
           />
       }
 
       {
         role !== "LEADER" &&
-        [
-          <div className="StepOption"><h3>or be pinged</h3></div>,
+        <Fragment>
+          <div className="StepOption"><h3>or be pinged</h3></div>
           <ConnectionFollower
             tinCan={ tinCan }
-            onSetupFinished={ () => this.assembleTinCan() }
+            readyToAssemble={() => {
+              return Promise.resolve(this.chooseRole("FOLLOWER"))
+                .then(this.assembleTinCan())
+            }}
           />
-        ]
+        </Fragment>
       }
     </div>;
   }
@@ -88,7 +102,19 @@ class ConnectionSetup extends Component {
 
 
 const mapStateToProps = (state) => {
-  return { role: state.connectionSetup.role };
+  const {
+    role,
+    candidate,
+    pingOffer,
+    wasPingCopied,
+  } = state.connectionSetup;
+
+  return {
+    role,
+    candidate,
+    pingOffer,
+    wasPingCopied,
+  };
 };
 
 export default connect(mapStateToProps)(ConnectionSetup);

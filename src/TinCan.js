@@ -57,7 +57,11 @@ class TinCan {
 
   checkConnectionEstablished() {
     const isChannelReady = this.channel.readyState === 'open';
-    const isConnectionReady = this.connection.connectState = 'connected';
+
+    // TODO: Clarify between which of these states are necessary
+    const isConnectionReady = this.connection.connectionState === 'connected'
+      || this.connection.iceConnectionState === 'completed'
+      || this.connection.iceConnectionState === 'connected';
 
     if (isConnectionReady && isChannelReady) {
       this.onConnectionEstablished();
@@ -125,7 +129,7 @@ class TinCan {
 
   ponged = async pong => {
     this.sentDescriptions.push(pong.offer);
-    this.connection.setRemoteDescription(pong.offer);
+    await this.connection.setRemoteDescription(pong.offer);
 
     return this;
   };

@@ -1,51 +1,68 @@
 import React, { Fragment, Component } from "react";
 import emoji from "base64-emoji";
+import { connect } from "react-redux";
 import classnames from "classnames";
 import {
   pingPacker as packer,
   pongUnpacker as unpacker
 } from "./packaging";
 import Copy from './Copy';
+import {
+  SET_CANDIDATE_ACTION,
+  SET_PING_OFFER_ACTION,
+  SET_PING_WAS_COPIED_ACTION
+} from './state/connectionSetup';
 import { Button } from './ConnectionStyles.css';
 
-export default class ConnectionLeader extends Component {
+export class ConnectionLeader extends Component {
   emojiBlockElement = null;
 
   constructor(props) {
     super();
 
-    const { tinCan, onSetupFinished } = props;
+    const {
+      tinCan,
+      readyToAssemble
+    } = props;
 
     this.state = {
-      pingOffer: null,
       pongOffer: null,
-      candidate: null,
       isPingCopied: false,
     };
 
     tinCan.setCandidateReceiver(this.receiveCandidate.bind(this));
-    onSetupFinished();
+    readyToAssemble();
   }
 
   componentDidMount() {
-    this.generatePingOffer();
+    const { pingOffer } = this.props;
+
+    if (!pingOffer) {
+      this.generatePingOffer();
+    }
   }
 
   receiveCandidate(candidate) {
     if (!candidate) return;
+    const { dispatch } = this.props;
 
-    this.setState(prevState => {
-      return { ...prevState, candidate };
+    dispatch({
+      type: SET_CANDIDATE_ACTION,
+      candidate
     });
   }
 
   generatePingOffer() {
-    const { tinCan } = this.props;
+    const {
+      dispatch,
+      tinCan
+    } = this.props;
 
     tinCan.ping()
       .then(pingOffer => {
-        this.setState((prevState) => {
-          return { ...prevState, pingOffer };
+        dispatch({
+          type: SET_PING_OFFER_ACTION,
+          pingOffer
         });
       });
   }
@@ -72,23 +89,29 @@ export default class ConnectionLeader extends Component {
 
   onPingCopy() {
     this.setState(prevState => {
+      const { dispatch } = this.props;
+      dispatch({ type: SET_PING_WAS_COPIED_ACTION, value: true });
       return { ...prevState, isPingCopied: true };
     });
   }
 
   render() {
     const {
-      pingOffer,
       pong,
-      candidate,
       isPingCopied,
     } = this.state;
 
+    const {
+      candidate,
+      pingOffer,
+      wasPingCopied
+    } = this.props;
+
     const onCopy = this.onPingCopy.bind(this);
-    const emojiPing = this.packPing(pingOffer, candidate);
+    const emojiPing = pingOffer && candidate ? this.packPing(pingOffer, candidate) : null;
 
     return <div className="ConnectionLeader">
-      { pingOffer && candidate ?
+      { emojiPing ?
         <Fragment>
           <div className="StepOption"><h2>1. copy ping</h2></div>
           <Copy onCopy={ onCopy } copyText={ emojiPing } render={copyAction => {
@@ -100,7 +123,7 @@ export default class ConnectionLeader extends Component {
         </Fragment> : 'Loading...'
       }
 
-      { isPingCopied ?
+      { isPingCopied || wasPingCopied ?
         (<Fragment>
           <div className="StepOption"><h2>2. send ping</h2></div>
           Paste the emoji ping in a message (it's already been copied) to the other chatflixer, by e-mail, facebook, SMS,
@@ -114,7 +137,7 @@ export default class ConnectionLeader extends Component {
           <textarea
             placeholder="Paste pong here"
             className="OfferTextarea"
-            value={ pong }
+            value={ pong || "" }
             onChange={ e => this.updatePong(e.target.value) }
           ></textarea>
 
@@ -125,3 +148,5 @@ export default class ConnectionLeader extends Component {
     </div>
   }
 }
+
+export default connect()(ConnectionLeader);
