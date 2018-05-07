@@ -6,15 +6,15 @@ import ConnectionLeader from './ConnectionLeader';
 import ConnectionFollower from './ConnectionFollower';
 import {
   connectionSetupReducer,
-  SET_ROLE_ACTION
+  SET_ROLE_ACTION,
+  RESET
 } from './state/connectionSetup';
 
 class ConnectionSetup extends Component {
   constructor(props) {
     super();
 
-    const role =  props.role || null;
-    this.state = { role };
+    this.state = {};
   }
 
   componentDidMount() {
@@ -41,23 +41,13 @@ class ConnectionSetup extends Component {
     });
   }
 
-  reset() {
-    this.chooseRole(null);
-  }
-
   render() {
-    const {
-      generatedOffer,
-      pongedOffer,
-      role
-    } = this.state;
-
-    const { tinCan } = this.props;
+    const { tinCan, dispatch, role } = this.props;
 
     const isRoleChosen = Boolean(role);
 
     return <div className="ConnectionSetup">
-      <button className="EmojiButton Button Reset" onClick={() => this.reset()}>
+      <button className="EmojiButton Button Reset" onClick={() => dispatch({ type: RESET })}>
         reset ⏮
       </button>
 
@@ -97,8 +87,8 @@ class ConnectionSetup extends Component {
 }
 
 
-const mapStateToProps = (state) => ({
-  role: state.connectionSetup.role
-});
+const mapStateToProps = (state) => {
+  return { role: state.connectionSetup.role };
+};
 
 export default connect(mapStateToProps)(ConnectionSetup);

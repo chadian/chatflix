@@ -1,4 +1,5 @@
 export const SET_ROLE_ACTION = 'SET_ROLE_ACTION';
+export const RESET = 'RESET';
 
 const defaultState = {
   connectionSetup: {
@@ -20,6 +21,11 @@ export function connectionSetupReducer(state, action) {
       ...state,
       connectionSetup: { role }
     };
+  }
+
+  if (action.type === RESET) {
+    console.log(defaultState);
+    return { ...defaultState }
   }
 
   return state;
