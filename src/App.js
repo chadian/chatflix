@@ -1,6 +1,6 @@
 import React, { Fragment, Component } from 'react';
 import TinCan from './TinCan';
-import ConnectionSetup from './ConnectionSetup';
+import ConnectionSetup from "./ConnectionSetup";
 import logo from './logo.svg';
 import './App.css';
 
@@ -15,7 +15,10 @@ class App extends Component {
 
   onConnectionEstablished() {
     this.setState(prevState => {
-      return { ...prevState, isConnectionEstablished: true };
+      return {
+        ...prevState,
+        isConnectionEstablished: true
+      };
     });
   }
 

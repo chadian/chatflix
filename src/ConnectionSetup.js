@@ -1,16 +1,20 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
+import { connect } from 'react-redux';
 import classnames from 'classnames';
 import styles from './ConnectionStyles.css';
 import ConnectionLeader from './ConnectionLeader';
 import ConnectionFollower from './ConnectionFollower';
+import {
+  connectionSetupReducer,
+  SET_ROLE_ACTION
+} from './state/connectionSetup';
 
-export default class ConnectionSetup extends Component {
-  constructor() {
+class ConnectionSetup extends Component {
+  constructor(props) {
     super();
 
-    this.state = {
-      role: null
-    };
+    const role =  props.role || null;
+    this.state = { role };
   }
 
   componentDidMount() {
@@ -30,10 +34,10 @@ export default class ConnectionSetup extends Component {
   }
 
   chooseRole(role) {
-    this.setState((prevState) => {
-      return {
-        ...prevState, role
-      };
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'SET_ROLE_ACTION',
+      role
     });
   }
 
@@ -59,15 +63,15 @@ export default class ConnectionSetup extends Component {
 
       {
         (!isRoleChosen) &&
-        [
-          <div className="StepOption"><h3>ping</h3></div>,
+        <Fragment>
+          <div className="StepOption"><h3>ping</h3></div>
           <button
             className='EmojiButton Button'
             onClick={ () => this.chooseRole("LEADER") }
           >
             🗣 create ping
           </button>
-        ]
+        </Fragment>
       }
 
       {
@@ -91,3 +95,10 @@ export default class ConnectionSetup extends Component {
     </div>;
   }
 }
+
+
+const mapStateToProps = (state) => ({
+  role: state.connectionSetup.role
+});
+
+export default connect(mapStateToProps)(ConnectionSetup);
