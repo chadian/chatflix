@@ -1,7 +1,5 @@
 import React, { Fragment, Component } from "react";
-import emoji from "base64-emoji";
 import { connect } from "react-redux";
-import classnames from "classnames";
 import {
   pingPacker as packer,
   pongUnpacker as unpacker

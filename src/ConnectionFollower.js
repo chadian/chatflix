@@ -21,6 +21,9 @@ export class ConnectionFollower extends Component {
       ping: null,
       isPongCopied: false,
     };
+
+    // no-op, not required for follower
+    tinCan.setCandidateReceiver(() => {});
   }
 
   updatePing(ping) {

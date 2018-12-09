@@ -13,7 +13,7 @@ class App extends Component {
 
   onConnectionEstablished() {
     let { dispatch } = this.props;
-    dispatch({type: CONNECTION_ESTABLISHED_ACTION });
+    dispatch({ type: CONNECTION_ESTABLISHED_ACTION });
   }
 
   render() {
