@@ -11,18 +11,13 @@ export default class extends Component {
   }
 }
 
-class TinCan {
-  alias = Math.random().toString();
+export class TinCan {
   channelName = '';
-  candidateReceiver = () => {};
-  messageReceiver = () => {};
 
   sentDescriptions = [];
   receivedDescriptions = [];
-  isDataChannelOpen = true;
 
-  constructor(alias, channelName = 'default') {
-    this.alias = alias;
+  constructor(channelName = 'default') {
     this.channelName = channelName;
   }
 
@@ -45,14 +40,14 @@ class TinCan {
     // setup ice candidate handling
     connection.onicecandidate = e => this.candidateReceiver(e.candidate);
 
-    connection.onconnectionstatechange = this.checkConnectionEstablished.bind(this);
+    connection.onconnectionstatechange = () => this.checkConnectionEstablished();
   }
 
   setupChannel(channel) {
     const messageReceiver = this.messageReceiver;
     channel.onmessage = messageEvent => messageReceiver(messageEvent.data);
-    channel.onopen = this.checkConnectionEstablished.bind(this);
-    channel.onclose = this.checkConnectionEstablished.bind(this);
+    channel.onopen = () => this.checkConnectionEstablished();
+    channel.onclose = () => this.checkConnectionEstablished();
   }
 
   checkConnectionEstablished() {
@@ -60,8 +55,8 @@ class TinCan {
 
     // TODO: Clarify between which of these states are necessary
     const isConnectionReady = this.connection.connectionState === 'connected'
-      || this.connection.iceConnectionState === 'completed'
-      || this.connection.iceConnectionState === 'connected';
+    || this.connection.iceConnectionState === 'completed'
+    || this.connection.iceConnectionState === 'connected';
 
     if (isConnectionReady && isChannelReady) {
       this.onConnectionEstablished();
@@ -77,6 +72,7 @@ class TinCan {
   setCandidateReceiver = receiver => {
     if (typeof receiver !== 'function')
       throw TypeError('Receiver should be a function');
+
     this.candidateReceiver = receiver;
 
     return this;
@@ -84,6 +80,7 @@ class TinCan {
 
   tryCandidate = ice => {
     if (!ice) return;
+
     this.connection.addIceCandidate(ice);
 
     return this;
