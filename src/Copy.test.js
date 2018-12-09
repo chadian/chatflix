@@ -1,13 +1,14 @@
 import React from "react";
-import { shallow } from "enzyme";
-
+import enzyme, { shallow } from "enzyme";
+import Adapter from "enzyme-adapter-react-16";
 import Copy from "./Copy";
+
+enzyme.configure({ adapter: new Adapter() });
 
 let copyText;
 let onCopyMock;
 let wrapper;
 let selectNodeMock;
-let createRangeMock;
 let addRangeMock;
 let mockRange;
 let execCommandMock;
@@ -16,7 +17,7 @@ let execCommandMock;
 beforeEach(() => {
   selectNodeMock = jest.fn();
   mockRange = { selectNode: selectNodeMock };
-  createRangeMock = document.createRange = jest
+  document.createRange = jest
     .fn()
     .mockReturnValue(mockRange);
 
